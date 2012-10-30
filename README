@@ -1,0 +1,5 @@
+This directory contains a very simple harness to get you working on your
+submission right away. Simply implement your solution in compute.h. You can
+build and run your submission to make sure it works by running test.sh.
+When you are satisfied with your solution, submit your compute.h at
+www.jumptrading.com/eights.
