@@ -3,6 +3,9 @@
 #include <cmath>
 
 //#define MATHEMATICA_TEST
+#define MATHEMATICA_TEST_LIMIT 10000
+
+//#define RUNNING_AVG
 
 float compute(const Data& d);
 
@@ -15,18 +18,23 @@ float compute_hmean(const float *);
 void print_tuple(const float *);
 
 float bad_sum(const float *, const int, const int);
+void kahan_action(const float, float *, float *);
 float kahan_sum(const float *, const int, const int);
 float (*sum)(const float *, const int, const int) = kahan_sum;
 
 float compute(const Data& d)
 {
 #ifdef MATHEMATICA_TEST
-  int N = 5000;
+  int N = MATHEMATICA_TEST_LIMIT;
 #else
   int N = d.size();
 #endif
 
   float avg = 0;
+
+#ifndef RUNNING_AVG
+  float c = 0;
+#endif
 
 #ifdef MATHEMATICA_TEST
   printf("Mean @@ {HarmonicMean[Function[x,x^(8 + 1/8)]/@#]&/@{\n");
@@ -35,10 +43,14 @@ float compute(const Data& d)
   for(int i = 0; i < N; i++){
 
     const float *v = d.value(i);
-
     float m = compute_hmean(v);
+
+#ifdef RUNNING_AVG
     float a = (i*avg + m)/(i+1);
     avg = a;
+#else
+    kahan_action(m, &avg, &c);
+#endif
 
 #ifdef MATHEMATICA_TEST
     print_tuple(v);
@@ -49,18 +61,28 @@ float compute(const Data& d)
   printf("}}\n");
 #endif
 
+#ifdef RUNNING_AVG
   return avg;
+#else
+  return avg/N;
+#endif
+}
+
+void kahan_action(const float x, float *s, float *c){
+  float y = x - *c;
+  float t = *s + y;
+
+  *c = (t - *s) - y;
+  *s = t;
 }
 
 float kahan_sum(const float *x, const int i, const int n){
   float s = x[i];
   float c = 0;
-  for(int j = i+1; j < n; j++){
-    float y = x[j] - c;
-    float t = s + y;
-    c = (t - s) - y;
-    s = t;
-  }
+
+  for(int j = i+1; j < n; j++)
+    kahan_action(x[j], &s, &c);
+
   return s;
 }
 
