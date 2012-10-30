@@ -24,8 +24,8 @@ float compute(const Data& d)
   float avg = 0;
   float c = 0;
 
-  for(int i = 0; i < N; i++){
-
+  for(int i = 0; i < N; i++)
+  {
     const float *v = d.value(i);
     float m = compute_hmean(v);
 
@@ -35,7 +35,8 @@ float compute(const Data& d)
   return avg/N;
 }
 
-void kahan_action(const float x, float *s, float *c){
+void kahan_action(const float x, float *s, float *c)
+{
   float y = x - *c;
   float t = *s + y;
 
@@ -43,7 +44,8 @@ void kahan_action(const float x, float *s, float *c){
   *s = t;
 }
 
-float kahan_sum(const float *x, const int i, const int n){
+float kahan_sum(const float *x, const int i, const int n)
+{
   float s = x[i];
   float c = 0;
 
@@ -53,24 +55,28 @@ float kahan_sum(const float *x, const int i, const int n){
   return s;
 }
 
-float bad_sum(const float *x, const int i, const int n){
+float bad_sum(const float *x, const int i, const int n)
+{
   float s = x[i];
   for(int j = i+1; j < n; j++)
     s = s + x[j];
   return s;
 }
 
-float bad_power(const float d){
+float bad_power(const float d)
+{
   return pow(d, -(8 + (float)(1/8)));
 }
 
-float ok_power(const float d){
+float ok_power(const float d)
+{
   float f = sqrt(sqrt(sqrt(d)));
   float g = pow(pow(pow(d,2),2),2);
   return 1/(f*g);
 }
 
-float compute_hmean(const float *x){
+float compute_hmean(const float *x)
+{
   float y[8];
 
   // raise power and invert
@@ -86,7 +92,8 @@ float compute_hmean(const float *x){
   return r;
 }
 
-void print_tuple(const float *x){
+void print_tuple(const float *x)
+{
   printf("{%f", x[0]);
   for(int i=1; i<8; i++)
     printf(",%f", x[i]);
