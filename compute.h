@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <cmath>
 
+//#define MATHEMATICA_TEST
+
 float compute(const Data& d);
 
 float bad_power(const float);
@@ -18,12 +20,17 @@ float (*sum)(const float *, const int, const int) = kahan_sum;
 
 float compute(const Data& d)
 {
+#ifdef MATHEMATICA_TEST
+  int N = 5000;
+#else
   int N = d.size();
+#endif
 
   float avg = 0;
 
-  //printf("Mean @@ {HarmonicMean[Function[x,x^(8 + 1/8)]/@#]&/@{\n");
-  //printf("}}\n");
+#ifdef MATHEMATICA_TEST
+  printf("Mean @@ {HarmonicMean[Function[x,x^(8 + 1/8)]/@#]&/@{\n");
+#endif
 
   for(int i = 0; i < N; i++){
 
@@ -33,9 +40,14 @@ float compute(const Data& d)
     float a = (i*avg + m)/(i+1);
     avg = a;
 
-    //printf("%f:%f: ", a, m);
-    //print_tuple(v);
+#ifdef MATHEMATICA_TEST
+    print_tuple(v);
+#endif
   }
+
+#ifdef MATHEMATICA_TEST
+  printf("}}\n");
+#endif
 
   return avg;
 }
