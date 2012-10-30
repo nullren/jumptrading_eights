@@ -53,7 +53,7 @@ float kahan_sum(const float *x, const int i, const int n)
 
 float ok_power(const float d)
 {
-  float f = sqrt(sqrt(sqrt(d)));
+  float f = sqrtf(sqrtf(sqrtf(d)));
   float g = pow(pow(pow(d,2),2),2);
   return 1/(f*g);
 }
