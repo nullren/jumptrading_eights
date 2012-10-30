@@ -20,7 +20,7 @@ float compute(const Data& d)
   float avg = 0;
   float c = 0;
 
-  for(int i = 0; i < N; i++)
+  for(int i = 0; i < N; ++i)
   {
     const float *v = d.value(i);
     float m = compute_hmean(v);
@@ -45,7 +45,7 @@ float kahan_sum(const float *x, const int i, const int n)
   float s = x[i];
   float c = 0;
 
-  for(int j = i+1; j < n; j++)
+  for(int j = i+1; j < n; ++j)
     kahan_action(x[j], &s, &c);
 
   return s;
@@ -63,7 +63,7 @@ float compute_hmean(const float *x)
   float y[8];
 
   // raise power and invert
-  for(int i=0; i<8; i++)
+  for(int i=0; i<8; ++i)
     y[i] = power(x[i]);
 
   float s = sum(y, 0, 8);
