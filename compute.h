@@ -4,15 +4,11 @@
 
 float compute(const Data& d);
 
-float bad_power(const float);
 float ok_power(const float);
 float (*power)(const float) = ok_power;
 
 float compute_hmean(const float *);
 
-void print_tuple(const float *);
-
-float bad_sum(const float *, const int, const int);
 void kahan_action(const float, float *, float *);
 float kahan_sum(const float *, const int, const int);
 float (*sum)(const float *, const int, const int) = kahan_sum;
@@ -55,19 +51,6 @@ float kahan_sum(const float *x, const int i, const int n)
   return s;
 }
 
-float bad_sum(const float *x, const int i, const int n)
-{
-  float s = x[i];
-  for(int j = i+1; j < n; j++)
-    s = s + x[j];
-  return s;
-}
-
-float bad_power(const float d)
-{
-  return pow(d, -(8 + (float)(1/8)));
-}
-
 float ok_power(const float d)
 {
   float f = sqrt(sqrt(sqrt(d)));
@@ -90,12 +73,4 @@ float compute_hmean(const float *x)
     r = 0;
 
   return r;
-}
-
-void print_tuple(const float *x)
-{
-  printf("{%f", x[0]);
-  for(int i=1; i<8; i++)
-    printf(",%f", x[i]);
-  printf("},\n");
 }
