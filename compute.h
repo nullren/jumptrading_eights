@@ -1,7 +1,7 @@
 #include "Data.h"
 #include <stdio.h>
 #include <cmath>
-#include <xmmintrin.h>
+#include <smmintrin.h>
 
 float compute(const Data& d);
 
@@ -18,6 +18,7 @@ float (*sum)(const float *, const int, const int) = kahan_sum;
 
 __m128 sse_sqr(const __m128);
 __m128 sse_power(const __m128);
+__m128 v1 = _mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f);
 
 float compute(const Data& d)
 {
@@ -100,16 +101,11 @@ float sse_compute_hmean(const float *x)
   __m128 *sx = (__m128*)x;
   __m128 *sy = (__m128*)y;
 
-  // raise power and invert
-  for(int i=0; i<2; ++i){
+  for(int i=0; i<2; ++i)
     sy[i] = sse_power(sx[i]);
-  }
 
-  float s = sum(y, 0, 8);
-  float r = 8/s;
+  sy[0] = _mm_add_ps(sy[0], sy[1]);
+  sy[0] = _mm_dp_ps(sy[0], v1, 241);
 
-  if( std::isnan(r) )
-    r = 0;
-
-  return r;
+  return 8/y[0];
 }
