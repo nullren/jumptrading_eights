@@ -5,8 +5,6 @@
 //#define MATHEMATICA_TEST
 #define MATHEMATICA_TEST_LIMIT 10000
 
-//#define RUNNING_AVG
-
 float compute(const Data& d);
 
 float bad_power(const float);
@@ -31,10 +29,7 @@ float compute(const Data& d)
 #endif
 
   float avg = 0;
-
-#ifndef RUNNING_AVG
   float c = 0;
-#endif
 
 #ifdef MATHEMATICA_TEST
   printf("Mean @@ {HarmonicMean[Function[x,x^(8 + 1/8)]/@#]&/@{\n");
@@ -45,12 +40,7 @@ float compute(const Data& d)
     const float *v = d.value(i);
     float m = compute_hmean(v);
 
-#ifdef RUNNING_AVG
-    float a = (i*avg + m)/(i+1);
-    avg = a;
-#else
     kahan_action(m, &avg, &c);
-#endif
 
 #ifdef MATHEMATICA_TEST
     print_tuple(v);
@@ -61,11 +51,7 @@ float compute(const Data& d)
   printf("}}\n");
 #endif
 
-#ifdef RUNNING_AVG
-  return avg;
-#else
   return avg/N;
-#endif
 }
 
 void kahan_action(const float x, float *s, float *c){
